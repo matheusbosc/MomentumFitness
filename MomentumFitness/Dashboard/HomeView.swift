@@ -48,7 +48,7 @@ struct HomeView: View {
                     })
                     {
                         Image(systemName: "line.horizontal.2.decrease.circle")
-                            .font(.system(size: 40, weight: .semibold))
+                            .font(.system(size: 40, weight: .light))
                             .foregroundColor(Color(red: 0.141, green: 0.443, blue: 0.604))
                     }
                     Spacer()
@@ -57,17 +57,35 @@ struct HomeView: View {
                 Spacer(minLength: width * 0.1)
                 
                 // --- Tabs ---
-                ScrollView (.horizontal){
-                    HStack{
-                        tabButton(title: "overview", tab: .overview)
-                        tabButton(title: "recommendations", tab: .recommendation)
-                        tabButton(title: "activity", tab: .activity)
-                        tabButton(title: "rewards", tab: .rewards)
-                    }
-                }
+                VStack(spacing: 0) {
+                    ScrollView (.horizontal){
+                        HStack{
+                            Spacer(minLength: width*0.05)
+                            tabButton(title: "overview", tab: .overview)
+                            tabButton(title: "recommendations", tab: .recommendation)
+                            tabButton(title: "activity", tab: .activity)
+                            tabButton(title: "rewards", tab: .rewards)
+                            Spacer(minLength: width*0.05)
+                        }
+                    }.scrollIndicators(.hidden)
+
+                            ZStack {
+                                switch selectedTab {
+                                case .overview:
+                                    OverviewView()
+                                case .recommendation:
+                                    RecommendationView()
+                                case .activity:
+                                    ActivityView()
+                                case .rewards:
+                                    RewardsView()
+                                }
+                            }
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        }
                 
                 
-            }
+            }.scrollIndicators(.hidden)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(LinearGradient(colors: [
@@ -88,7 +106,10 @@ struct HomeView: View {
                     } else {
                         RoundedRectangle(cornerRadius: 36)
                             .fill(.clear)
-                            .border(mainGradient, width: 6)
+                            .overlay(
+                                    RoundedRectangle(cornerRadius: 36)
+                                        .strokeBorder(mainGradient, lineWidth: 3)
+                                    )
                     }
                     Text(title)
                         .font(.custom("Quicksand", size: 24))
@@ -99,10 +120,39 @@ struct HomeView: View {
                 .frame(maxWidth: .infinity)
             }
             .buttonStyle(.plain)
+            .padding(8)
+            .shadow(color: Color(hex: "3782D6"), radius: 5)
+        
+        
         }
 }
 
+extension Color {
+    init(hex: String) {
+        let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
+        var int: UInt64 = 0
+        Scanner(string: hex).scanHexInt64(&int)
+        let a, r, g, b: UInt64
+        switch hex.count {
+        case 3: // RGB (12-bit)
+            (a, r, g, b) = (255, (int >> 8) * 17, (int >> 4 & 0xF) * 17, (int & 0xF) * 17)
+        case 6: // RGB (24-bit)
+            (a, r, g, b) = (255, int >> 16, int >> 8 & 0xFF, int & 0xFF)
+        case 8: // ARGB (32-bit)
+            (a, r, g, b) = (int >> 24, int >> 16 & 0xFF, int >> 8 & 0xFF, int & 0xFF)
+        default:
+            (a, r, g, b) = (1, 1, 1, 0)
+        }
 
+        self.init(
+            .sRGB,
+            red: Double(r) / 255,
+            green: Double(g) / 255,
+            blue:  Double(b) / 255,
+            opacity: Double(a) / 255
+        )
+    }
+}
 
 #Preview {
     HomeView()
