@@ -28,7 +28,7 @@ struct OverviewView: View {
                 ZStack{
                     RoundedRectangle(cornerRadius: 31)
                         .fill(mainGradient)
-                        .frame(width: width * 0.875, height: height * 0.18)
+                        .frame(width: width * 0.875, height: height * 0.18) // Change height to .17 and correct spacing based on the changes
                         .shadow(color: Color(hex: "3782D6"), radius: 5)
                     HStack{
                         Spacer()
