@@ -175,6 +175,7 @@ struct DailyProgressWidget: View {
             }
             
         }
+        .buttonStyle(.plain)
     }
 }
 
@@ -228,7 +229,7 @@ struct CheckInButton: View {
                     Spacer()
                 }
             }
-        }//.buttonStyle(SoftFadeButtonStyle())
+        }.buttonStyle(.plain)
     }
 }
 

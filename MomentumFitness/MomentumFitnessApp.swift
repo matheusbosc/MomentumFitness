@@ -9,9 +9,16 @@ import SwiftUI
 
 @main
 struct MomentumFitnessApp: App {
+    
+    @State private var loggedIn = false
+    
     var body: some Scene {
         WindowGroup {
-            HomeView()
+            if loggedIn {
+                            HomeView()
+                        } else {
+                            AuthView(loggedIn: $loggedIn)
+                        }
         }
     }
 }
