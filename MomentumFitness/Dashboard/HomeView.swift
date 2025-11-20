@@ -19,6 +19,8 @@ struct HomeView: View {
     
     @State private var selectedTab: Tab = .overview
     
+    @Binding var loggedIn: Bool
+    
     let mainGradient = LinearGradient(colors: [
         Color(red: 0.22, green: 0.51, blue: 0.843),
         Color(red: 0.059, green: 0.8, blue: 0.565)],
@@ -45,7 +47,10 @@ struct HomeView: View {
                     
                     // MENU
                     Button(action: {
+                        KeychainService.delete("access_token")
+                        KeychainService.delete("refresh_token")
                         
+                        loggedIn = false
                     })
                     {
                         Image(systemName: "line.horizontal.2.decrease.circle")
@@ -130,5 +135,5 @@ struct HomeView: View {
 
 
 #Preview {
-    HomeView()
+    HomeView(loggedIn: .constant(false))
 }

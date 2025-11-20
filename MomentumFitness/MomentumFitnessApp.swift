@@ -10,37 +10,42 @@ import SwiftUI
 
 @main
 struct MomentumFitnessApp: App {
-    
+
     @State private var loggedIn = false
-    
+
     var body: some Scene {
+        WindowGroup {
+            RootView(loggedIn: $loggedIn)
+                .onAppear {
+                    tryAutoLogin()
+                }
+        }
+    }
 
-        let access = KeychainService.get("access_token")
-        let refresh = KeychainService.get("refresh_token")
-
-        if (access != nil && refresh != nil){   
-            
-            let response = check_refresh(access: access, refresh: refresh)
-
-            KeychainService.set("access_token", response.access_token)
-            KeychainService.set("refresh_token", response.refresh_token)
-            
-            loggedIn = true
+    func tryAutoLogin() {
+        guard let access = KeychainService.get("access_token"),
+              let refresh = KeychainService.get("refresh_token") else {
+            return
         }
 
-        WindowGroup {
-            if loggedIn {
-                            HomeView()
-                        } else {
-                            AuthView(loggedIn: $loggedIn)
-                        }
+        Task {
+            do {
+                let response = try await check_refresh(access: access, refresh: refresh)
+
+                KeychainService.set("access_token", for: response.access_token)
+                KeychainService.set("refresh_token", for: response.refresh_token)
+
+                await MainActor.run {
+                    loggedIn = true
+                }
+            } catch {
+                print("Error:", error)
+            }
         }
     }
 
     func check_refresh(access: String, refresh: String) async throws -> RefreshBody {
-        guard let url = URL(string: "https://special-train-grp7jx4w9q439w7w-8000.app.github.dev/api/v1/auth/check_refresh_status") else {
-                return 
-            }
+        let url = URL(string: "http://192.168.2.180:2010/api/v1/auth/check_refresh_status")!
 
         let requestBody = RefreshBody(access_token: access, refresh_token: refresh)
         let jsonData = try JSONEncoder().encode(requestBody)
@@ -56,8 +61,20 @@ struct MomentumFitnessApp: App {
             throw NSError(domain: "APIError", code: http.statusCode)
         }
 
-        let decoded = try JSONDecoder().decode(LoginResponse.self, from: data)
+        let decoded = try JSONDecoder().decode(RefreshBody.self, from: data)
         return decoded
+    }
+}
+
+struct RootView: View {
+    @Binding var loggedIn: Bool
+
+    var body: some View {
+        if loggedIn {
+            HomeView(loggedIn: $loggedIn)
+        } else {
+            AuthView(loggedIn: $loggedIn)
+        }
     }
 }
 

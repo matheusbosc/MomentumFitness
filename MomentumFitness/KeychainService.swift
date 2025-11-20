@@ -12,7 +12,7 @@ import Security
 class KeychainService {
 
     static func set(_ value: String, for key: String) -> Bool {
-        guard let data = value.data(using : utf8) else { return false }
+        guard let data = value.data(using : .utf8) else { return false }
 
         //Delete any existing value
         let query: [String: Any] = [
@@ -52,8 +52,8 @@ class KeychainService {
         return string
     }
 
-    static func delete(_key: String) -> Bool {
-        let query [String: Any] = [
+    static func delete(_ key: String) -> Bool {
+        let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrAccount as String: key
         ]

@@ -95,7 +95,27 @@ struct AuthView: View {
                     .font(.custom("Quicksand", size: 24))
                     
                     Button {
-                        loggedIn = true
+                        
+                        print(username)
+                        print(password)
+                        
+                        Task {
+                            do {
+                                
+                                let response = try await login(user: username, password: password)
+
+                                print("Access:", response.access_token)
+                                print("Refresh:", response.refresh_token)
+
+                                KeychainService.set("access_token", for: response.access_token)
+                                KeychainService.set("refresh_token", for: response.refresh_token)
+                                
+                                loggedIn = true
+                                
+                            } catch {
+                                print("Error:", error)
+                            }
+                        }
                     } label: {
                         ZStack{
                             
@@ -136,7 +156,34 @@ struct AuthView: View {
                                            startPoint: .topLeading,
                                            endPoint: .bottomTrailing))
     }
+    
+    func login(user: String, password: String) async throws -> RefreshBody {
+        let url = URL(string: "http://192.168.2.180:2010/api/v1/auth/login?email=\(urlEncode(user))&password=\(urlEncode(password))")!
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+
+        let (data, response) = try await URLSession.shared.data(for: request)
+
+        if let http = response as? HTTPURLResponse, !(200...299).contains(http.statusCode) {
+            throw NSError(domain: "APIError", code: http.statusCode)
+        }
+
+        let decoded = try JSONDecoder().decode(RefreshBody.self, from: data)
+        return decoded
+    }
+    
+    func urlEncode(_ text: String) -> String {
+        let allowed = CharacterSet.urlQueryAllowed
+        return text.addingPercentEncoding(withAllowedCharacters: allowed) ?? text
+    }
+
 }
+struct LoginBody: Codable {
+    let user: String
+    let password: String
+}
+
 
 #Preview {
     AuthView(loggedIn: .constant(false))
