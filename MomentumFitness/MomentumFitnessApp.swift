@@ -35,6 +35,9 @@ struct MomentumFitnessApp: App {
                 KeychainService.set("access_token", for: response.access_token)
                 KeychainService.set("refresh_token", for: response.refresh_token)
 
+                print(KeychainService.set("access_token"))
+                print(KeychainService.set("refresh_token"))
+
                 await MainActor.run {
                     loggedIn = true
                 }
