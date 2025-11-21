@@ -158,7 +158,7 @@ struct AuthView: View {
     }
     
     func login(user: String, password: String) async throws -> RefreshBody {
-        let url = URL(string: "http://192.168.2.180:2010/api/v1/auth/login?email=\(urlEncode(user))&password=\(urlEncode(password))")!
+        let url = URL(string: "https://momentumfitness.matheusbosc.com/api/v1/auth/login?email=\(urlEncode(user))&password=\(urlEncode(password))")!
 
         var request = URLRequest(url: url)
         request.httpMethod = "POST"

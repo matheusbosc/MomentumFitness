@@ -45,7 +45,7 @@ struct MomentumFitnessApp: App {
     }
 
     func check_refresh(access: String, refresh: String) async throws -> RefreshBody {
-        let url = URL(string: "http://192.168.2.180:2010/api/v1/auth/check_refresh_status")!
+        let url = URL(string: "https://momentumfitness.matheusbosc.com/api/v1/auth/check_refresh_status")!
 
         let requestBody = RefreshBody(access_token: access, refresh_token: refresh)
         let jsonData = try JSONEncoder().encode(requestBody)
