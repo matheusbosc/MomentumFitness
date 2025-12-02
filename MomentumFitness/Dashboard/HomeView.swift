@@ -14,12 +14,14 @@ enum Tab {
 }
 
 import SwiftUI
+import KeychainSwift
 
 struct HomeView: View {
     
     @State private var selectedTab: Tab = .overview
     
     @Binding var loggedIn: Bool
+    @Binding var isMenuOpened: Bool
     
     let mainGradient = LinearGradient(colors: [
         Color(red: 0.22, green: 0.51, blue: 0.843),
@@ -34,7 +36,6 @@ struct HomeView: View {
         
         ZStack{
             ScrollView(.vertical){
-                
                 // --- HEADER ---
                 HStack{
                     Spacer()
@@ -47,13 +48,10 @@ struct HomeView: View {
                     
                     // MENU
                     Button(action: {
-                        KeychainService.delete("access_token")
-                        KeychainService.delete("refresh_token")
-                        
-                        loggedIn = false
+                        isMenuOpened = true
                     })
                     {
-                        Image(systemName: "line.horizontal.2.decrease.circle")
+                        Image(systemName: "line.horizontal.3.circle")
                             .font(.system(size: 40, weight: .light))
                             .foregroundColor(Color(red: 0.141, green: 0.443, blue: 0.604))
                     }
@@ -135,5 +133,5 @@ struct HomeView: View {
 
 
 #Preview {
-    HomeView(loggedIn: .constant(false))
+    HomeView(loggedIn: .constant(false), isMenuOpened: .constant(false))
 }

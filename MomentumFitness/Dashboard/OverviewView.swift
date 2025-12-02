@@ -55,7 +55,7 @@ struct DailyProgressWidget: View {
                 RoundedRectangle(cornerRadius: 31)
                     .fill(Color(hex: "172031").shadow(.inner(radius: 28)))
                     .frame(width: width * 0.875, height: height * 0.40)
-                    .shadow(color: Color(hex: "40266CB9"), radius: 10)
+                    .shadow(color: Color(hex: "40266CB9"), radius: 5)
                     .overlay(
                             RoundedRectangle(cornerRadius: 31)
                                 .strokeBorder(Color(hex: "1F293C"), lineWidth: 7)

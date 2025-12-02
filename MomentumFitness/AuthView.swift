@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import KeychainSwift
 
 struct AuthView: View {
     
@@ -107,8 +108,9 @@ struct AuthView: View {
                                 print("Access:", response.access_token)
                                 print("Refresh:", response.refresh_token)
 
-                                KeychainService.set("access_token", for: response.access_token)
-                                KeychainService.set("refresh_token", for: response.refresh_token)
+                                let keychain = KeychainSwift()
+                                keychain.set(response.access_token, forKey: "access_token")
+                                keychain.set(response.refresh_token, forKey: "refresh_token")
                                 
                                 loggedIn = true
                                 
@@ -158,7 +160,7 @@ struct AuthView: View {
     }
     
     func login(user: String, password: String) async throws -> RefreshBody {
-        let url = URL(string: "https://momentumfitness.matheusbosc.com/api/v1/auth/login?email=\(urlEncode(user))&password=\(urlEncode(password))")!
+        let url = URL(string: "https://momentumfitness.matheusbosc.com/api/api/v1/auth/login?email=\(urlEncode(user))&password=\(urlEncode(password))")!
 
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
