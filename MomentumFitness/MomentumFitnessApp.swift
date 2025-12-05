@@ -26,10 +26,11 @@ struct MomentumFitnessApp: App {
     @State private var isMenuOpened = false
     @State private var loading = true
     @State private var currentPage: Page = .home
+    @State private var lastPage: Page = .home
 
     var body: some Scene {
         WindowGroup {
-            RootView(loggedIn: $loggedIn, loading: $loading, isMenuOpened: $isMenuOpened, currentPage: $currentPage)
+            RootView(loggedIn: $loggedIn, loading: $loading, isMenuOpened: $isMenuOpened, currentPage: $currentPage, lastPage: $lastPage)
                 .onAppear {
                     tryAutoLogin()
                 }
@@ -92,6 +93,7 @@ struct MomentumFitnessApp: App {
         let decoded = try JSONDecoder().decode(RefreshBody.self, from: data)
         return decoded
     }
+    
 }
 
 struct RootView: View {
@@ -99,6 +101,7 @@ struct RootView: View {
     @Binding var loading: Bool
     @Binding var isMenuOpened: Bool
     @Binding var currentPage: Page
+    @Binding var lastPage: Page
 
     var body: some View {
         
@@ -121,7 +124,7 @@ struct RootView: View {
                     case .settings:
                         HomeView(loggedIn: $loggedIn, isMenuOpened: $isMenuOpened)
                     case .user:
-                        HomeView(loggedIn: $loggedIn, isMenuOpened: $isMenuOpened)
+                        UserPage(currentPage: $currentPage, lastPage: $lastPage)
                     }
                     
                     if (isMenuOpened) {
