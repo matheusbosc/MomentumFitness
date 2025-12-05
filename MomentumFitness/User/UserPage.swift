@@ -13,6 +13,7 @@ struct UserPage: View {
     
     @Binding var currentPage: Page
     @Binding var lastPage: Page
+    @State var userInfo: UserInfo
     
     //@FocusState private var emailFieldIsFocused: Bool = false
     let mainGradient = LinearGradient(colors: [
@@ -56,7 +57,7 @@ struct UserPage: View {
                             Spacer(minLength: width * 0.88)
                         }
                         Spacer(minLength: height * 0.025)
-                        Text("{username}")
+                        Text(userInfo.username)
                             .font(.custom("Quicksand", size: 42))
                             .foregroundStyle(.white)
                         Spacer(minLength: height * 0.04)
@@ -321,8 +322,75 @@ struct UserPage: View {
                     Color(red: 0.039, green: 0.082, blue: 0.125)],
                                            startPoint: .topLeading,
                                            endPoint: .bottomTrailing))
+            .onAppear(){
+                set_user_info()
+            }
+    }
+    
+    func set_user_info() {
+        let keychain = KeychainSwift()
+        
+        guard let access = keychain.get("access_token"),
+              let username = keychain.get("username")
+        else {
+                print("Missing tokens — cannot fetch data")
+                return
+            }
+
+        Task {
+            do {
+                let response = try await get_user_info(access: access, username: username)
+                print(response)
+
+                await MainActor.run {
+                    userInfo = response
+                }
+            } catch {
+                print("Error:", error)
+            }
+        }
+    }
+    
+    func get_user_info(access: String, username: String) async throws -> UserInfo {
+        
+        let url = URL(string: "https://momentumfitness.matheusbosc.com/api/api/v1/account/user/\(username)")!
+
+        let requestBody = AccessToken(access_token: access)
+        let jsonData = try JSONEncoder().encode(requestBody)
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.httpBody = jsonData
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        print(request)
+        print(request.httpMethod)
+        print(request.httpBody)
+        
+        let (data, response) = try await URLSession.shared.data(for: request)
+
+        if let http = response as? HTTPURLResponse, !(200...299).contains(http.statusCode) {
+            print(http.statusCode)
+            throw NSError(domain: "APIError", code: http.statusCode)
+        }
+
+        let decoded = try JSONDecoder().decode(UserInfo.self, from: data)
+        return decoded
     }
 
+}
+
+struct AccessToken: Codable{
+    let access_token: String
+}
+
+struct UserInfo: Codable {
+    let user_id: Int
+    let username: String
+    let email: String
+    let first_name: String
+    let last_name: String
+    let message: String // TODO: remove this line when server updates to v0.10
 }
 
 extension RoundedCornerStyle {
@@ -351,5 +419,5 @@ struct RoundedCorner: Shape {
 
 
 #Preview {
-    UserPage(currentPage: .constant(.user), lastPage: .constant(.user))
+    UserPage(currentPage: .constant(.user), lastPage: .constant(.user), userInfo: UserInfo(user_id: -1, username: "ERROR", email: "ERROR", first_name: "ERROR", last_name: "ERROR", message: "ERROR"))
 }

@@ -124,7 +124,7 @@ struct RootView: View {
                     case .settings:
                         HomeView(loggedIn: $loggedIn, isMenuOpened: $isMenuOpened)
                     case .user:
-                        UserPage(currentPage: $currentPage, lastPage: $lastPage)
+                        UserPage(currentPage: $currentPage, lastPage: $lastPage, userInfo: UserInfo(user_id: 0, username: "loading...", email: "loading...", first_name: "loading...", last_name: "loading...", message: "loading..."))
                     }
                     
                     if (isMenuOpened) {
@@ -143,3 +143,4 @@ struct RefreshBody: Codable {
     let access_token: String
     let refresh_token: String
 }
+

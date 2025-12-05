@@ -111,6 +111,7 @@ struct AuthView: View {
                                 let keychain = KeychainSwift()
                                 keychain.set(response.access_token, forKey: "access_token")
                                 keychain.set(response.refresh_token, forKey: "refresh_token")
+                                keychain.set(username, forKey: "username")
                                 
                                 loggedIn = true
                                 
