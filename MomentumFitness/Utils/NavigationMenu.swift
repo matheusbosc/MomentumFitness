@@ -12,6 +12,7 @@ struct NavigationMenu: View {
     
     @Binding var isMenuOpened: Bool
     @Binding var currentPage: Page
+    @Binding var lastPage: Page
     
     let mainGradient = LinearGradient(colors: [
         Color(red: 0.22, green: 0.51, blue: 0.843),
@@ -60,6 +61,7 @@ struct NavigationMenu: View {
                     .foregroundStyle(currentPage == .home ? mainGradient : LinearGradient(colors: [.white, .white], startPoint: .top, endPoint: .bottom))
                     .padding(.bottom, 0.1)
                     .onTapGesture {
+                        lastPage = currentPage
                         currentPage = .home
                         isMenuOpened = false
                     }
@@ -68,6 +70,7 @@ struct NavigationMenu: View {
                     .foregroundStyle(currentPage == .search ? mainGradient : LinearGradient(colors: [.white, .white], startPoint: .top, endPoint: .bottom))
                     .padding(.bottom, 0.1)
                     .onTapGesture {
+                        lastPage = currentPage
                         currentPage = .search
                         isMenuOpened = false
                         
@@ -77,6 +80,7 @@ struct NavigationMenu: View {
                     .foregroundStyle(currentPage == .friends ? mainGradient : LinearGradient(colors: [.white, .white], startPoint: .top, endPoint: .bottom))
                     .padding(.bottom, 0.1)
                     .onTapGesture {
+                        lastPage = currentPage
                         currentPage = .friends
                         isMenuOpened = false
                     }
@@ -85,6 +89,7 @@ struct NavigationMenu: View {
                     .foregroundStyle(currentPage == .cookbook ? mainGradient : LinearGradient(colors: [.white, .white], startPoint: .top, endPoint: .bottom))
                     .padding(.bottom, 0.1)
                     .onTapGesture {
+                        lastPage = currentPage
                         currentPage = .cookbook
                         isMenuOpened = false
                     }
@@ -93,6 +98,7 @@ struct NavigationMenu: View {
                     .foregroundStyle(currentPage == .routines ? mainGradient : LinearGradient(colors: [.white, .white], startPoint: .top, endPoint: .bottom))
                     .padding(.bottom, 0.1)
                     .onTapGesture {
+                        lastPage = currentPage
                         currentPage = .routines
                         isMenuOpened = false
                     }
@@ -100,6 +106,7 @@ struct NavigationMenu: View {
                     .font(.custom("Quicksand", size: 28))
                     .foregroundStyle(currentPage == .settings ? mainGradient : LinearGradient(colors: [.white, .white], startPoint: .top, endPoint: .bottom))
                     .onTapGesture {
+                        lastPage = currentPage
                         currentPage = .settings
                         isMenuOpened = false
                     }
@@ -123,5 +130,5 @@ struct NavigationMenu: View {
 }
 
 #Preview {
-    NavigationMenu(isMenuOpened: .constant(true), currentPage: .constant(.home))
+    NavigationMenu(isMenuOpened: .constant(true), currentPage: .constant(.home), lastPage: .constant(.home))
 }

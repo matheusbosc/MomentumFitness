@@ -28,7 +28,6 @@ enum Page {
     case settings_help
     case settings_licenses
     case settings_privacypolicy
-    case settings_logout
 }
 
 @main
@@ -117,33 +116,45 @@ struct RootView: View {
 
     var body: some View {
         
+        let height = UIScreen.main.bounds.height
+        
         if (loading){
             LoadingScreen()
         } else {
             if loggedIn {
                 ZStack{
-                    switch currentPage {
-                    case .home:
-                        HomeView(loggedIn: $loggedIn, isMenuOpened: $isMenuOpened)
-                    case .search:
-                        HomeView(loggedIn: $loggedIn, isMenuOpened: $isMenuOpened)
-                    case .friends:
-                        HomeView(loggedIn: $loggedIn, isMenuOpened: $isMenuOpened)
-                    case .cookbook:
-                        HomeView(loggedIn: $loggedIn, isMenuOpened: $isMenuOpened)
-                    case .routines:
-                        HomeView(loggedIn: $loggedIn, isMenuOpened: $isMenuOpened)
-                    case .settings:
-                        HomeView(loggedIn: $loggedIn, isMenuOpened: $isMenuOpened)
-                    case .user:
-                        UserPage(currentPage: $currentPage, lastPage: $lastPage, userInfo: UserInfo(user_id: 0, username: "loading...", email: "loading...", first_name: "loading...", last_name: "loading...", message: "loading..."))
-                    default:
-                        HomeView(loggedIn: $loggedIn, isMenuOpened: $isMenuOpened)
-                    }
+                    Group{
+                        switch currentPage {
+                        case .home:
+                            HomeView(loggedIn: $loggedIn, isMenuOpened: $isMenuOpened)
+                        case .search:
+                            HomeView(loggedIn: $loggedIn, isMenuOpened: $isMenuOpened)
+                        case .friends:
+                            HomeView(loggedIn: $loggedIn, isMenuOpened: $isMenuOpened)
+                        case .cookbook:
+                            HomeView(loggedIn: $loggedIn, isMenuOpened: $isMenuOpened)
+                        case .routines:
+                            HomeView(loggedIn: $loggedIn, isMenuOpened: $isMenuOpened)
+                        case .settings:
+                            SettingList(currentPage: $currentPage, lastPage: $lastPage, loggedIn: $loggedIn, isMenuOpened: $isMenuOpened)
+                        case .user:
+                            UserPage(currentPage: $currentPage, lastPage: $lastPage, userInfo: UserInfo(user_id: 0, username: "loading...", email: "loading...", first_name: "loading...", last_name: "loading...", message: "loading..."))
+                        default:
+                            HomeView(loggedIn: $loggedIn, isMenuOpened: $isMenuOpened)
+                        }
+                    }.id(currentPage)
+                        .transition(.asymmetric(
+                            insertion: .move(edge: .trailing),
+                            removal: .move(edge: .leading)
+                        ))
+                        .animation(.easeInOut(duration: 0.28), value: currentPage)
+
                     
-                    if (isMenuOpened) {
-                        NavigationMenu(isMenuOpened: $isMenuOpened, currentPage: $currentPage)
-                    }
+                    
+                    NavigationMenu(isMenuOpened: $isMenuOpened, currentPage: $currentPage, lastPage: $lastPage)
+                        .offset(y: isMenuOpened ? 0 : -(height * 0.9))     // slide from top
+                        .animation(.easeInOut(duration: 0.25), value: isMenuOpened)
+                    
                 }
             } else {
                 AuthView(loggedIn: $loggedIn)

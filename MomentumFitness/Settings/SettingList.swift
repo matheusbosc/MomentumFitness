@@ -13,6 +13,8 @@ struct SettingList: View {
     
     @Binding var currentPage: Page
     @Binding var lastPage: Page
+    @Binding var loggedIn: Bool
+    @Binding var isMenuOpened: Bool
     
     //@FocusState private var emailFieldIsFocused: Bool = false
     let mainGradient = LinearGradient(colors: [
@@ -30,6 +32,20 @@ struct SettingList: View {
             VStack{
                 ZStack{
                     Image(.userPageHeader)
+                    HStack{
+                        Spacer()
+                        Button(action: {
+                            isMenuOpened = true
+                        })
+                        {
+                            Image(systemName: "line.horizontal.3.circle")
+                                .font(.system(size: 40, weight: .light))
+                                .foregroundColor(.white)
+                        }
+                        .padding(.trailing, width * 0.1)
+                        
+                    }
+                    .padding(.bottom, width * 0.3)
                     Text("settings")
                         .foregroundStyle(.white)
                         .padding(.top, height * 0.075)
@@ -49,6 +65,7 @@ struct SettingList: View {
                         .padding(.leading, width * 0.1)
                         .font(.custom("Quicksand", size: 24))
                         .onTapGesture {
+                            lastPage = currentPage
                             currentPage = .settings_profile
                         }
                     Spacer()
@@ -59,6 +76,7 @@ struct SettingList: View {
                         .padding(.leading, width * 0.1)
                         .font(.custom("Quicksand", size: 24))
                         .onTapGesture {
+                            lastPage = currentPage
                             currentPage = .settings_prefs
                         }
                     Spacer()
@@ -69,6 +87,7 @@ struct SettingList: View {
                         .padding(.leading, width * 0.1)
                         .font(.custom("Quicksand", size: 24))
                         .onTapGesture {
+                            lastPage = currentPage
                             currentPage = .settings_dets
                         }
                     Spacer()
@@ -79,6 +98,7 @@ struct SettingList: View {
                         .padding(.leading, width * 0.1)
                         .font(.custom("Quicksand", size: 24))
                         .onTapGesture {
+                            lastPage = currentPage
                             currentPage = .settings_notif
                         }
                     Spacer()
@@ -89,6 +109,7 @@ struct SettingList: View {
                         .padding(.leading, width * 0.1)
                         .font(.custom("Quicksand", size: 24))
                         .onTapGesture {
+                            lastPage = currentPage
                             currentPage = .settings_privacy
                         }
                     Spacer()
@@ -107,6 +128,7 @@ struct SettingList: View {
                         .padding(.leading, width * 0.1)
                         .font(.custom("Quicksand", size: 24))
                         .onTapGesture {
+                            lastPage = currentPage
                             currentPage = .settings_comSettings
                         }
                     Spacer()
@@ -117,6 +139,7 @@ struct SettingList: View {
                         .padding(.leading, width * 0.1)
                         .font(.custom("Quicksand", size: 24))
                         .onTapGesture {
+                            lastPage = currentPage
                             currentPage = .settings_recommendations
                         }
                     Spacer()
@@ -135,6 +158,7 @@ struct SettingList: View {
                         .padding(.leading, width * 0.1)
                         .font(.custom("Quicksand", size: 24))
                         .onTapGesture {
+                            lastPage = currentPage
                             currentPage = .settings_about
                         }
                     Spacer()
@@ -145,6 +169,7 @@ struct SettingList: View {
                         .padding(.leading, width * 0.1)
                         .font(.custom("Quicksand", size: 24))
                         .onTapGesture {
+                            lastPage = currentPage
                             currentPage = .settings_help
                         }
                     Spacer()
@@ -155,6 +180,7 @@ struct SettingList: View {
                         .padding(.leading, width * 0.1)
                         .font(.custom("Quicksand", size: 24))
                         .onTapGesture {
+                            lastPage = currentPage
                             currentPage = .settings_licenses
                         }
                     Spacer()
@@ -165,6 +191,7 @@ struct SettingList: View {
                         .padding(.leading, width * 0.1)
                         .font(.custom("Quicksand", size: 24))
                         .onTapGesture {
+                            lastPage = currentPage
                             currentPage = .settings_privacypolicy
                         }
                     Spacer()
@@ -175,7 +202,15 @@ struct SettingList: View {
                         .padding(.leading, width * 0.1)
                         .font(.custom("Quicksand", size: 24))
                         .onTapGesture {
-                            currentPage = .settings_logout
+                            let keychain = KeychainSwift()
+                            
+                            keychain.delete("access_token")
+                            keychain.delete("refresh_token")
+                            
+                            lastPage = .home
+                            currentPage = .home
+                            
+                            loggedIn = false
                         }
                     Spacer()
                 }
@@ -193,5 +228,5 @@ struct SettingList: View {
 
 
 #Preview {
-    SettingList(currentPage: .constant(.user), lastPage: .constant(.settings))
+    SettingList(currentPage: .constant(.user), lastPage: .constant(.settings), loggedIn: .constant(true), isMenuOpened: .constant(false))
 }
