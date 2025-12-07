@@ -17,6 +17,18 @@ enum Page {
     case routines
     case settings
     case user
+    case settings_profile
+    case settings_prefs
+    case settings_dets
+    case settings_notif
+    case settings_privacy
+    case settings_comSettings
+    case settings_recommendations
+    case settings_about
+    case settings_help
+    case settings_licenses
+    case settings_privacypolicy
+    case settings_logout
 }
 
 @main
@@ -125,6 +137,8 @@ struct RootView: View {
                         HomeView(loggedIn: $loggedIn, isMenuOpened: $isMenuOpened)
                     case .user:
                         UserPage(currentPage: $currentPage, lastPage: $lastPage, userInfo: UserInfo(user_id: 0, username: "loading...", email: "loading...", first_name: "loading...", last_name: "loading...", message: "loading..."))
+                    default:
+                        HomeView(loggedIn: $loggedIn, isMenuOpened: $isMenuOpened)
                     }
                     
                     if (isMenuOpened) {

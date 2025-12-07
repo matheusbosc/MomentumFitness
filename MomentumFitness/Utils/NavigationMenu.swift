@@ -43,10 +43,15 @@ struct NavigationMenu: View {
                     .frame(width: width * 0.2)
                     .onTapGesture {
                         currentPage = .user
+                        isMenuOpened = false
                     }
                 Text("{firstname} {lastname}")
                     .font(.custom("Quicksand", size: 32))
                     .foregroundStyle(mainGradient)
+                    .onTapGesture {
+                        currentPage = .user
+                        isMenuOpened = false
+                    }
                 
                 Spacer(minLength: width * 0.08)
                 
@@ -56,6 +61,7 @@ struct NavigationMenu: View {
                     .padding(.bottom, 0.1)
                     .onTapGesture {
                         currentPage = .home
+                        isMenuOpened = false
                     }
                 Text("search")
                     .font(.custom("Quicksand", size: 28))
@@ -63,6 +69,8 @@ struct NavigationMenu: View {
                     .padding(.bottom, 0.1)
                     .onTapGesture {
                         currentPage = .search
+                        isMenuOpened = false
+                        
                     }
                 Text("friends")
                     .font(.custom("Quicksand", size: 28))
@@ -70,6 +78,7 @@ struct NavigationMenu: View {
                     .padding(.bottom, 0.1)
                     .onTapGesture {
                         currentPage = .friends
+                        isMenuOpened = false
                     }
                 Text("cook book")
                     .font(.custom("Quicksand", size: 28))
@@ -77,6 +86,7 @@ struct NavigationMenu: View {
                     .padding(.bottom, 0.1)
                     .onTapGesture {
                         currentPage = .cookbook
+                        isMenuOpened = false
                     }
                 Text("routines")
                     .font(.custom("Quicksand", size: 28))
@@ -84,12 +94,14 @@ struct NavigationMenu: View {
                     .padding(.bottom, 0.1)
                     .onTapGesture {
                         currentPage = .routines
+                        isMenuOpened = false
                     }
                 Text("settings")
                     .font(.custom("Quicksand", size: 28))
                     .foregroundStyle(currentPage == .settings ? mainGradient : LinearGradient(colors: [.white, .white], startPoint: .top, endPoint: .bottom))
                     .onTapGesture {
                         currentPage = .settings
+                        isMenuOpened = false
                     }
                 
                 Spacer(minLength:  width * 0.35)
